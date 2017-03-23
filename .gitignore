@@ -1,0 +1,4 @@
+app/__tests__
+app/android
+app/ios
+app/node_modules
