@@ -1,3 +1,5 @@
+/* Android Application for PillReminder */
+
 import React, { Component } from 'react';
 import {
 	AppRegistry,
