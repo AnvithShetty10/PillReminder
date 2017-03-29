@@ -2,8 +2,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
  
-const char* ssid = "Gunner";
-const char* password = "anvith10";
+const char* ssid = "NETWORK_SSID";
+const char* password = "NETWORK_PASSWORD";
  
 int ledPin = 13; // GPIO13 PIN 13 - D7
 int ledPin2 = 12; //D6
@@ -11,6 +11,8 @@ int ledPin3 = 16; //D0
 int ledPin4 = 15; //D8
 int ledPin5 = 14; //D5
 int ledPin6 = 5;  //D1
+
+// 301 is set as the default port
 WiFiServer server(301);
  
 void setup() {
@@ -59,6 +61,7 @@ void setup() {
 }
  
 void loop() {
+ 
   // Check if a client has connected
   WiFiClient client = server.available();
   if (!client) {
@@ -66,7 +69,7 @@ void loop() {
   }
  
   // Wait until the client sends some data
-  Serial.println("new client");
+  Serial.println("New client connection established");
   while(!client.available()){
     delay(1);
   }
@@ -77,10 +80,11 @@ void loop() {
   client.flush();
    
   // Match the request
-  int value1 = LOW,value2=LOW,value3=LOW,value4=LOW,value5=LOW,value6=LOW;
+  // All LEDs initially set to LOW
+  int value1 = LOW, value2=LOW, value3=LOW, value4=LOW, value5=LOW, value6=LOW;
+ 
   if (request.indexOf("/LED1=ON") != -1)  {
     digitalWrite(ledPin, HIGH);
-    Serial.println("hey");
     value1 = HIGH;
   }
   if (request.indexOf("/LED1=OFF") != -1)  {
@@ -134,13 +138,12 @@ void loop() {
     digitalWrite(ledPin6, LOW);
     value6 = LOW;
   }
-// Set ledPin according to the request
-//digitalWrite(ledPin, value);
  
+  // Set ledPin according to the request
   // Return the response
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
-  client.println(""); //  do not forget this one
+  client.println(""); // BLANK LINE for HTML Response
   client.println("<!DOCTYPE HTML>");
   client.println("<html>");
 
@@ -161,7 +164,8 @@ void loop() {
   client.println("<a href=\"/LED5=OFF\"\"><button style='font-size: 3em;'>Compartment 5 OFF</button></a>");
   client.println("<a href=\"/LED6=OFF\"\"><button style='font-size: 3em;'>Compartment 6 OFF</button></a>");
   delay(1);
-  Serial.println("Client disonnected");
+ 
+  Serial.println("Client Connection disonnected");
   Serial.println("");
  
 }
