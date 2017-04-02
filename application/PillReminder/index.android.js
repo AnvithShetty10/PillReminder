@@ -37,18 +37,18 @@ class PillReminder extends Component {
 		this.clickHandler = this.clickHandler.bind(this);
 	}
 	render() {
-		const timeOptions = [
+		let timeOptions = [
     		"9 AM",
     		"3 PM",
 			"6 PM"
   		];
-		const LedOptions = [
+		let LedOptions = [
 			"LED 1",
 			"LED 2",
 			"LED 3",
 			"LED 4",
 			"LED 5",
-			"LED 6",
+			"LED 6"
 		];
 
   		function setSelectedLed(selectedLed){
