@@ -1,4 +1,4 @@
-app/__tests__
-app/android
-app/ios
-app/node_modules
+application/PillReminder/__tests__
+application/PillReminder/android
+application/PillReminder/ios
+application/PillReminder/node_modules

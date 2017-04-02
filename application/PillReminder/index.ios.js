@@ -1,4 +1,8 @@
-/* iOS application for PillReminder */
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ * @flow
+ */
 
 import React, { Component } from 'react';
 import {
@@ -8,7 +12,7 @@ import {
   View
 } from 'react-native';
 
-export default class reactTutApp extends Component {
+export default class PillReminder extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -46,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('reactTutApp', () => reactTutApp);
+AppRegistry.registerComponent('PillReminder', () => PillReminder);
