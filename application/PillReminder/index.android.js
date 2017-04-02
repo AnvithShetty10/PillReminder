@@ -1,53 +1,87 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
+	AppRegistry,
+	View,
+	Button,
+	Text,
 } from 'react-native';
 
-export default class PillReminder extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
-    );
-  }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+
+
+class PillReminder extends Component {
+	clickHandler() {
+		fetch('http://anask.xyz/ledger/react-check', {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				led: 'heyy',
+				secondParam: 'yourOtherValue',
+			})
+		}).then((response) => response.json())
+			.then((responseJson) => {
+				this.setState({
+					showText: JSON.stringify(responseJson)
+				})
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}
+
+	constructor() {
+		super();
+		this.state = { showText: null };
+
+		this.clickHandler = this.clickHandler.bind(this);
+	}
+	render() {
+		let check = this.state.showText ? this.state.showText : "Click on any one button to proceed";
+		return (
+			<View style={{ padding: 20 }}>
+				<Button
+          style={{ padding: 20 }}
+					onPress={this.clickHandler}
+					title="LED 1 ON"
+					color="#841584"
+				/>
+				<Button
+          style={{ padding: 20 }}
+					onPress={this.clickHandler}
+					title="LED 2 ON"
+					color="#841584"
+				/>
+				<Button
+          style={{ padding: 20 }}
+					onPress={this.clickHandler}
+					title="LED 3 ON"
+					color="#841584"
+				/>
+				<Button
+          style={{ padding: 20 }}
+					onPress={this.clickHandler}
+					title="LED 4 ON"
+					color="#841584"
+				/>
+				<Button
+          style={{ padding:20 }}                    
+					onPress={this.clickHandler}
+					title="LED 5 ON"
+					color="#841584"
+				/>
+				<Button
+          style={{ padding:20 }}
+					onPress={this.clickHandler}
+					title="LED 6 ON"
+					color="#841584"
+				/>
+				<Text style={{ padding: 20 }}>{check}</Text>
+			</View>
+		);
+	}
+}
 
 AppRegistry.registerComponent('PillReminder', () => PillReminder);
