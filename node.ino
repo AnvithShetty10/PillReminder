@@ -1,168 +1,135 @@
-#include <TimeLib.h>
+/*
+ Basic ESP8266 MQTT example
+
+ This sketch demonstrates the capabilities of the pubsub library in combination
+ with the ESP8266 board/library.
+
+ It connects to an MQTT server then:
+  - publishes "hello world" to the topic "outTopic" every two seconds
+  - subscribes to the topic "inTopic", printing out any messages
+    it receives. NB - it assumes the received payloads are strings not binary
+  - If the first character of the topic "inTopic" is an 1, switch ON the ESP Led,
+    else switch it off
+
+ It will reconnect to the server if the connection is lost using a blocking
+ reconnect function. See the 'mqtt_reconnect_nonblocking' example for how to
+ achieve the same result without blocking the main loop.
+
+ To install the ESP8266 board, (using Arduino 1.6.4+):
+  - Add the following 3rd party board manager under "File -> Preferences -> Additional Boards Manager URLs":
+       http://arduino.esp8266.com/stable/package_esp8266com_index.json
+  - Open the "Tools -> Board -> Board Manager" and click install for the ESP8266"
+  - Select your ESP8266 in "Tools -> Board"
+
+*/
+
 #include <ESP8266WiFi.h>
-#include <WiFiUdp.h>
- 
+#include <PubSubClient.h>
+
+// Update these with values suitable for your network.
+
+int ledPin[]={13,12,16,15,14,5};
 const char* ssid = "Gunner";
 const char* password = "anvith10";
- 
-int ledPin = 13; // GPIO13 PIN 13 - D7
-int ledPin2 = 12; //D6
-int ledPin3 = 16; //D0
-int ledPin4 = 15; //D8
-int ledPin5 = 14; //D5
-int ledPin6 = 5;  //D1
-WiFiServer server(301);
- 
+const char* mqtt_server = "rohin.me";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+long lastMsg = 0;
+char msg[50];
+int value = 0;
+
 void setup() {
-  Serial.begin(9600);
+  pinMode(BUILTIN_LED, OUTPUT);
+  int i;
+  for(i=0;i<=5;i++){
+    pinMode(ledPin[i],OUTPUT);
+    digitalWrite(ledPin[i],LOW);  
+  }
+  
+  // Initialize the BUILTIN_LED pin as an output
+  Serial.begin(115200);
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+}
+
+void setup_wifi() {
+
   delay(10);
- 
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
-  pinMode(ledPin2, OUTPUT);
-  digitalWrite(ledPin2, LOW);
-  pinMode(ledPin3, OUTPUT);
-  digitalWrite(ledPin3, LOW);
-  pinMode(ledPin4, OUTPUT);
-  digitalWrite(ledPin4, LOW);
-  pinMode(ledPin5, OUTPUT);
-  digitalWrite(ledPin5, LOW);
-  pinMode(ledPin6, OUTPUT);
-  digitalWrite(ledPin6, LOW);
- 
-  // Connect to WiFi network
-  Serial.println();
+  // We start by connecting to a WiFi network
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
- 
+
   WiFi.begin(ssid, password);
- 
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
+
   Serial.println("");
   Serial.println("WiFi connected");
- 
-  // Start the server
-  server.begin();
-  Serial.println("Server started");
- 
-  // Print the IP address
-  Serial.print("Use this URL to connect: ");
-  Serial.print("http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("/");
-
- 
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
 }
- 
-void loop() {
-  // Check if a client has connected
-  WiFiClient client = server.available();
-  if (!client) {
-    return;
-  }
- 
-  // Wait until the client sends some data
-  Serial.println("new client");
-  while(!client.available()){
-    delay(1);
-  }
- 
-  // Read the first line of the request
-  String request = client.readStringUntil('\r');
-  Serial.println(request);
-  client.flush();
-   
-  // Match the request
-  int value1 = LOW,value2=LOW,value3=LOW,value4=LOW,value5=LOW,value6=LOW;
-  if (request.indexOf("/LED1=ON") != -1)  {
-    digitalWrite(ledPin, HIGH);
-    Serial.println("hey");
-    value1 = HIGH;
-  }
-  if (request.indexOf("/LED1=OFF") != -1)  {
-    digitalWrite(ledPin, LOW);
-    value1 = LOW;
-  }
 
- if (request.indexOf("/LED2=ON") != -1)  {
-    digitalWrite(ledPin2, HIGH);
-    value2 = HIGH;
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
   }
+  Serial.println();
 
- if (request.indexOf("/LED2=OFF") != -1)  {
-    digitalWrite(ledPin2, LOW);
-    value2 = LOW;
+  // Switch on the LED if an 1 was received as first character
+  if ((char)payload[2] == '1') {
+    digitalWrite(ledPin[((char)payload[1]-'0')-1], HIGH);   // Turn the LED on (Note that LOW is the voltage level
+    // but actually the LED is on; this is because
+    // it is acive low on the ESP-01)
+  } 
+  else {
+    digitalWrite(ledPin[((char)payload[1]-'0')-1], LOW);  // Turn the LED off by making the voltage HIGH
   } 
   
-   if (request.indexOf("/LED3=ON") != -1)  {
-    digitalWrite(ledPin3, HIGH);
-    value3 = HIGH;
-  }
-
- if (request.indexOf("/LED3=OFF") != -1)  {
-    digitalWrite(ledPin3, LOW);
-    value3 = LOW;
-  }
-   if (request.indexOf("/LED4=ON") != -1)  {
-    digitalWrite(ledPin4, HIGH);
-    value4 = HIGH;
-  }
-
- if (request.indexOf("/LED4=OFF") != -1)  {
-    digitalWrite(ledPin4, LOW);
-    value4 = LOW;
-  }
-   if (request.indexOf("/LED5=ON") != -1)  {
-    digitalWrite(ledPin5, HIGH);
-    value5 = HIGH;
-  }
-
- if (request.indexOf("/LED5=OFF") != -1)  {
-    digitalWrite(ledPin5, LOW);
-    value5 = LOW;
-  }
-   if (request.indexOf("/LED6=ON") != -1)  {
-    digitalWrite(ledPin6, HIGH);
-    value6 = HIGH;
-  }
-
- if (request.indexOf("/LED6=OFF") != -1)  {
-    digitalWrite(ledPin6, LOW);
-    value6 = LOW;
-  }
-// Set ledPin according to the request
-//digitalWrite(ledPin, value);
- 
-  // Return the response
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
-  client.println(""); //  do not forget this one
-  client.println("<!DOCTYPE HTML>");
-  client.println("<html>");
-
-  client.println("<p style='font-size: 4em;'>Select compartment</p>");
-  client.println("<a href=\"/LED1=ON\"\"><button style='font-size: 3em;'>Compartment 1 </button></a>");
-  client.println("<a href=\"/LED2=ON\"\"><button style='font-size: 3em;'>Compartment 2 </button></a>");
-  client.println("<a href=\"/LED3=ON\"\"><button style='font-size: 3em;'>Compartment 3 </button></a>");
-  client.println("<a href=\"/LED4=ON\"\"><button style='font-size: 3em;'>Compartment 4 </button></a>");
-  client.println("<a href=\"/LED5=ON\"\"><button style='font-size: 3em;'>Compartment 5 </button></a>");
-  client.println("<a href=\"/LED6=ON\"\"><button style='font-size: 3em;'>Compartment 6 </button></a>");
-  
-  client.println("<br><br>");
-  
-  client.println("<a href=\"/LED1=OFF\"\"><button style='font-size: 3em;'>Compartment 1 OFF </button></a>");
-  client.println("<a href=\"/LED2=OFF\"\"><button style='font-size: 3em;'>Compartment 2 OFF</button></a>");
-  client.println("<a href=\"/LED3=OFF\"\"><button style='font-size: 3em;'>Compartment 3 OFF</button></a>");
-  client.println("<a href=\"/LED4=OFF\"\"><button style='font-size: 3em;'>Compartment 4 OFF</button></a>");
-  client.println("<a href=\"/LED5=OFF\"\"><button style='font-size: 3em;'>Compartment 5 OFF</button></a>");
-  client.println("<a href=\"/LED6=OFF\"\"><button style='font-size: 3em;'>Compartment 6 OFF</button></a>");
-  delay(1);
-  Serial.println("Client disonnected");
-  Serial.println("");
- 
 }
 
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (client.connect("ESP8266Client")) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      client.publish("outTopic", "hello world");
+      // ... and resubscribe
+      client.subscribe("mpca");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+void loop() {
+
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  long now = millis();
+  if (now - lastMsg > 2000) {
+    lastMsg = now;
+    ++value;
+    snprintf (msg, 75, "hello world #%ld", value);
+    Serial.print("Publish message: ");
+    Serial.println(msg);
+    client.publish("outTopic", msg);
+  }
+}
