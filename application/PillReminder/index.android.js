@@ -5,9 +5,7 @@ import {
 	Button,
 	Text,
 } from 'react-native';
-
-
-
+import { SegmentedControls } from 'react-native-radio-buttons';
 
 class PillReminder extends Component {
 	clickHandler() {
@@ -39,7 +37,16 @@ class PillReminder extends Component {
 		this.clickHandler = this.clickHandler.bind(this);
 	}
 	render() {
-		let check = this.state.showText ? this.state.showText : "Click on any one button to proceed";
+		const options = [
+    		"9 AM",
+    		"3 PM",
+			"6 PM"
+  		];
+
+  		function setSelectedOption(selectedOption){
+    		this.setState({selectedOption});
+  		}
+		let check = this.state.showText ? this.state.showText : "Click on any one button (with time) to proceed";
 		return (
 			<View style={{ padding: 20, flex: 1 }}>
 				<Button
@@ -77,6 +84,11 @@ class PillReminder extends Component {
 					onPress={this.clickHandler}
 					title="LED 6 ON"
 					color="#841584"
+				/>
+				<SegmentedControls
+ 	 				options={ options }
+  					onSelection={ setSelectedOption.bind(this) }
+  					selectedOption={ this.state.selectedOption }
 				/>
 				<Text style={{ padding: 20 }}>{check}</Text>
 			</View>
