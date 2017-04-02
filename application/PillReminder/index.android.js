@@ -16,8 +16,8 @@ class PillReminder extends Component {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				led: 'heyy',
-				secondParam: 'yourOtherValue',
+				led: this.state.selectedLed,
+				time: this.state.selectedTime,
 			})
 		}).then((response) => response.json())
 			.then((responseJson) => {
