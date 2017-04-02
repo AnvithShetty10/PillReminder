@@ -41,7 +41,7 @@ class PillReminder extends Component {
 	render() {
 		let check = this.state.showText ? this.state.showText : "Click on any one button to proceed";
 		return (
-			<View style={{ padding: 20 }}>
+			<View style={{ padding: 20, flex: 1 }}>
 				<Button
           style={{ padding: 20 }}
 					onPress={this.clickHandler}
