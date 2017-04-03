@@ -22,7 +22,7 @@ class PillReminder extends Component {
 		}).then((response) => response.json())
 			.then((responseJson) => {
 				this.setState({
-					showText: JSON.stringify(responseJson)
+					showText: JSON.stringify(responseJson.confirm)
 				})
 			})
 			.catch((error) => {
@@ -64,7 +64,7 @@ class PillReminder extends Component {
  	 				options={ LedOptions }
   					onSelection={ setSelectedLed.bind(this) }
   					selectedOption={ this.state.selectedLed }
-					//direction="column" --- commenting this till the issue is fixed on GitHub
+					//direction="column"
 				/>
 				<SegmentedControls
  	 				options={ timeOptions }
