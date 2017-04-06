@@ -28,10 +28,11 @@
 
 // Update these with values suitable for your network.
 
-int ledPin[]={13,12,16,15,14,5};
+int ledPin[]={13,12,16,15,14,5};  
+int offPin=4;      
 const char* ssid = "Gunner";
 const char* password = "anvith10";
-const char* mqtt_server = "rohin.me";
+const char* mqtt_server = "anask.xyz";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -46,13 +47,17 @@ void setup() {
     pinMode(ledPin[i],OUTPUT);
     digitalWrite(ledPin[i],LOW);  
   }
+  pinMode(offPin,INPUT_PULLUP);
+  digitalWrite(offPin,LOW);
   
   // Initialize the BUILTIN_LED pin as an output
   Serial.begin(115200);
+  //Serial.println(digitalRead(offPin));
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 }
+
 
 void setup_wifi() {
 
@@ -75,6 +80,7 @@ void setup_wifi() {
   Serial.println(WiFi.localIP());
 }
 
+//analyse the message sent and set corresponding pins high.
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
@@ -116,6 +122,7 @@ void reconnect() {
     }
   }
 }
+int i;
 void loop() {
 
   if (!client.connected()) {
@@ -123,13 +130,24 @@ void loop() {
   }
   client.loop();
 
+
   long now = millis();
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
+     Serial.println(digitalRead(offPin));
+    if(digitalRead(offPin)== 1){
+      delay(3000);
+      for(i=0;i<=5;i++){
+        digitalWrite(ledPin[i],LOW);
+        delay(500);
+      }
+    }
     snprintf (msg, 75, "hello world #%ld", value);
     Serial.print("Publish message: ");
     Serial.println(msg);
     client.publish("outTopic", msg);
+    
   }
+  
 }

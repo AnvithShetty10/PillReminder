@@ -7,6 +7,9 @@ int ledPin4 = 9; //D8
 int ledPin5 = 8; //D5
 int ledPin6 = 7;  //D1
 
+int offPin=6;
+int lcdPin=5;
+
 const int trigPin = 2;
 const int echoPin = 4;
 
@@ -15,6 +18,7 @@ const int buzzer = 3; //buzzer to arduino pin 3
 int sound=0;
 int buzzerFlag=0;
 int LEDFlag=0;
+int check=1;
 
 float trigger() {
      float duration;
@@ -46,12 +50,24 @@ void setup() {
   pinMode(ledPin6, OUTPUT);
   digitalWrite(ledPin6, LOW);
 
-  pinMode(A0, INPUT);
-  pinMode(A1, INPUT);
-  pinMode(A2, INPUT);
-  pinMode(A3, INPUT);
-  pinMode(A4, INPUT);
-  pinMode(A5, INPUT);
+  pinMode(offPin,OUTPUT);
+  digitalWrite(offPin,LOW);
+
+  pinMode(lcdPin,OUTPUT);
+  digitalWrite(lcdPin,LOW);
+
+  pinMode(A0, INPUT_PULLUP);
+  pinMode(A1, INPUT_PULLUP);
+  pinMode(A2, INPUT_PULLUP);
+  pinMode(A3, INPUT_PULLUP);
+  pinMode(A4, INPUT_PULLUP);
+  pinMode(A5, INPUT_PULLUP);
+  digitalWrite(A0,LOW);
+  digitalWrite(A1,LOW);
+  digitalWrite(A2,LOW);
+  digitalWrite(A3,LOW);
+  digitalWrite(A4,LOW);
+  digitalWrite(A5,LOW);
 
   Serial.begin(9600);
 }
@@ -67,7 +83,7 @@ void loop() {
      
    if(digitalRead(A0) == HIGH || digitalRead(A1) == HIGH || digitalRead(A2) == HIGH || digitalRead(A3) == HIGH || digitalRead(A4) == HIGH || digitalRead(A5) == HIGH)
       {
-        sound=1000;
+        sound=200;
         LEDFlag=1;
       }
    else{
@@ -78,16 +94,19 @@ void loop() {
           {
             tone(buzzer, sound);
             buzzerFlag=1;
+            digitalWrite(lcdPin,LOW);
+            digitalWrite(offPin,LOW);
+            
           }
      else{
          noTone(buzzer);
          buzzerFlag=0;
-         offLED();     
-        }
-  
-    
-  
-   
+         digitalWrite(lcdPin,HIGH);
+         delay(1000);
+         offLED();
+         digitalWrite(offPin,HIGH);
+              
+        } 
 }
   
 
@@ -97,33 +116,21 @@ if(digitalRead(A0)==HIGH)
    {
     digitalWrite(ledPin, HIGH);
     digitalWrite(A0, LOW);
+    
    
    }
-   if(digitalRead(A0)==LOW)
-   {
-    digitalWrite(ledPin, LOW);
-   }
+
      if(digitalRead(A1)==HIGH)
    {
     digitalWrite(ledPin2, HIGH);
     digitalWrite(A1, LOW);
+    
    }
   
-     if(digitalRead(A1)==LOW)
-   {
-    digitalWrite(ledPin2, LOW);
-   digitalWrite(A1, LOW);
-   }
 
     if(digitalRead(A2)==HIGH)
    {
     digitalWrite(ledPin3, HIGH);
-   digitalWrite(A2, LOW);
-   }
-  
-     if(digitalRead(A2)==LOW)
-   {
-    digitalWrite(ledPin3, LOW);
    digitalWrite(A2, LOW);
    }
 
@@ -132,24 +139,14 @@ if(digitalRead(A0)==HIGH)
     digitalWrite(ledPin4, HIGH);
    digitalWrite(A3, LOW);
    }
-  
-     if(digitalRead(A3)==LOW)
-   {
-    digitalWrite(ledPin4, LOW);
-   digitalWrite(A3, LOW);
-   }
+
 
     if(digitalRead(A4)==HIGH)
    {
     digitalWrite(ledPin5, HIGH);
    digitalWrite(A4, LOW);
    }
-  
-     if(digitalRead(A4)==LOW)
-   {
-    digitalWrite(ledPin5, LOW);
-   digitalWrite(A4, LOW);
-   }
+
 
     if(digitalRead(A5)==HIGH)
    {
@@ -157,28 +154,17 @@ if(digitalRead(A0)==HIGH)
    digitalWrite(A5, LOW);
    }
   
-     if(digitalRead(A5)==LOW)
-   {
-    digitalWrite(ledPin6, LOW);
-   digitalWrite(A5, LOW);
-   }
-   
 
 }
 
 void offLED(){
-    delay(5000);
     digitalWrite(ledPin, LOW);
-    delay(500);
     digitalWrite(ledPin2, LOW);
-    delay(500);
     digitalWrite(ledPin3, LOW);
-    delay(500);
     digitalWrite(ledPin4, LOW);
-    delay(500);
     digitalWrite(ledPin5, LOW);
-    delay(500);
     digitalWrite(ledPin6, LOW);  
   
 }
+
 
