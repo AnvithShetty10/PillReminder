@@ -5,9 +5,7 @@ import {
 	Button,
 	Text,
 } from 'react-native';
-
-
-
+import { SegmentedControls } from 'react-native-radio-buttons';
 
 class PillReminder extends Component {
 	clickHandler() {
@@ -18,13 +16,13 @@ class PillReminder extends Component {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				led: 'heyy',
-				secondParam: 'yourOtherValue',
+				led: this.state.selectedLed,
+				time: this.state.selectedTime,
 			})
 		}).then((response) => response.json())
 			.then((responseJson) => {
 				this.setState({
-					showText: JSON.stringify(responseJson)
+					showText: JSON.stringify(responseJson.confirm)
 				})
 			})
 			.catch((error) => {
@@ -34,51 +32,49 @@ class PillReminder extends Component {
 
 	constructor() {
 		super();
-		this.state = { showText: null };
+		this.state = { showText: null, selectedTime: 'None', selectedLed: 'None' };
 
 		this.clickHandler = this.clickHandler.bind(this);
 	}
 	render() {
-		let check = this.state.showText ? this.state.showText : "Click on any one button to proceed";
+		let timeOptions = [
+    		"9 AM",
+    		"3 PM",
+			"6 PM"
+  		];
+		let LedOptions = [
+			"LED 1",
+			"LED 2",
+			"LED 3",
+			"LED 4",
+			"LED 5",
+			"LED 6"
+		];
+
+  		function setSelectedLed(selectedLed){
+			this.setState({selectedLed});
+  		}
+		function setSelectedTime(selectedTime){
+			this.setState({selectedTime});
+		}
+		let check = this.state.showText ? this.state.showText : "Nothing";
 		return (
 			<View style={{ padding: 20, flex: 1 }}>
-				<Button
-          style={{ padding: 20 }}
-					onPress={this.clickHandler}
-					title="LED 1 ON"
-					color="#841584"
+				<SegmentedControls
+ 	 				options={ LedOptions }
+  					onSelection={ setSelectedLed.bind(this) }
+  					selectedOption={ this.state.selectedLed }
+					//direction="column"
 				/>
-				<Button
-          style={{ padding: 20 }}
-					onPress={this.clickHandler}
-					title="LED 2 ON"
-					color="#841584"
+				<SegmentedControls
+ 	 				options={ timeOptions }
+  					onSelection={ setSelectedTime.bind(this) }
+  					selectedOption={ this.state.selectedTime }
 				/>
-				<Button
-          style={{ padding: 20 }}
-					onPress={this.clickHandler}
-					title="LED 3 ON"
-					color="#841584"
-				/>
-				<Button
-          style={{ padding: 20 }}
-					onPress={this.clickHandler}
-					title="LED 4 ON"
-					color="#841584"
-				/>
-				<Button
-          style={{ padding:20 }}                    
-					onPress={this.clickHandler}
-					title="LED 5 ON"
-					color="#841584"
-				/>
-				<Button
-          style={{ padding:20 }}
-					onPress={this.clickHandler}
-					title="LED 6 ON"
-					color="#841584"
-				/>
-				<Text style={{ padding: 20 }}>{check}</Text>
+				<Text>Selected LED: {this.state.selectedLed}</Text>
+				<Text>Select Time: {this.state.selectedTime}</Text>
+				<Button onPress={this.clickHandler} title="Proceed" color="#841584"/>
+				<Text>{check}</Text>
 			</View>
 		);
 	}
