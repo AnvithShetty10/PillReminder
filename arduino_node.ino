@@ -89,7 +89,7 @@ void loop() {
    else{
     LEDFlag=0;
    }
-
+    
      if(inches<=5 && LEDFlag==1)
           {
             tone(buzzer, sound);
@@ -98,14 +98,12 @@ void loop() {
             digitalWrite(offPin,LOW);
             
           }
-     else{
+     else if(inches>5 && LEDFlag==1){
          noTone(buzzer);
          buzzerFlag=0;
          digitalWrite(lcdPin,HIGH);
          delay(1000);
-         offLED();
-         digitalWrite(offPin,HIGH);
-              
+         digitalWrite(offPin,HIGH);     
         } 
 }
   
@@ -114,49 +112,56 @@ void loop() {
 void controlLED(){
 if(digitalRead(A0)==HIGH)
    {
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(A0, LOW);
-    
-   
+    digitalWrite(ledPin, HIGH);  
    }
+else{
+  digitalWrite(ledPin, LOW);
+}
 
      if(digitalRead(A1)==HIGH)
    {
     digitalWrite(ledPin2, HIGH);
-    digitalWrite(A1, LOW);
-    
    }
-  
+    else{
+      digitalWrite(ledPin2, LOW);
+    }
 
     if(digitalRead(A2)==HIGH)
    {
     digitalWrite(ledPin3, HIGH);
-   digitalWrite(A2, LOW);
+   }
+   else{
+       digitalWrite(ledPin3, LOW);
    }
 
     if(digitalRead(A3)==HIGH)
    {
     digitalWrite(ledPin4, HIGH);
-   digitalWrite(A3, LOW);
+   }
+   else{
+       digitalWrite(ledPin4, LOW);
    }
 
 
     if(digitalRead(A4)==HIGH)
    {
     digitalWrite(ledPin5, HIGH);
-   digitalWrite(A4, LOW);
+   }
+   else{
+       digitalWrite(ledPin5, LOW);
    }
 
 
     if(digitalRead(A5)==HIGH)
    {
     digitalWrite(ledPin6, HIGH);
-   digitalWrite(A5, LOW);
    }
-  
-
+    else{
+         digitalWrite(A5, LOW);
+    }
 }
 
+/*
 void offLED(){
     digitalWrite(ledPin, LOW);
     digitalWrite(ledPin2, LOW);
@@ -166,5 +171,5 @@ void offLED(){
     digitalWrite(ledPin6, LOW);  
   
 }
-
+*/
 

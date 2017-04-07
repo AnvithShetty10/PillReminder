@@ -137,7 +137,7 @@ void loop() {
     ++value;
      Serial.println(digitalRead(offPin));
     if(digitalRead(offPin)== 1){
-      delay(3000);
+      delay(5000);
       for(i=0;i<=5;i++){
         digitalWrite(ledPin[i],LOW);
         delay(500);
