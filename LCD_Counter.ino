@@ -21,13 +21,47 @@
 
 int lcdPin = 9 ;
 
+const int trigPin = 7;
+const int echoPin = 6;
+
 // include the library code:
 #include <LiquidCrystal.h>
+#include<Servo.h>
+
+Servo myservo;
+int pos=0;
+
+int rotateFlag=1;
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
+
+//Functions to find duration to reach object and come back to ultrasonic sensor
+float trigger() {
+     float duration;
+     pinMode(trigPin, OUTPUT);
+     digitalWrite(trigPin, LOW);
+     delayMicroseconds(2);
+     digitalWrite(trigPin, HIGH);
+     delayMicroseconds(10);
+     digitalWrite(trigPin, LOW);
+     pinMode(echoPin, INPUT);
+     duration = pulseIn(echoPin, HIGH);
+     return(duration);
+}
+
+/*
+ * Servo motor is continuous rotation motor. 
+ * It can rotate 360 degree
+ * myservo.write(90) - 180 is the maximum anticlockwise speed
+ * myservo.write(90) - 0 is the maximum clockwise speed
+ * myservo.write(90) - no rotation
+ */
 void setup() {
+
+  myservo.attach(8);
+  myservo.write(90);  //no rotation
 
   pinMode(lcdPin,INPUT_PULLUP);
   digitalWrite(lcdPin,LOW);
@@ -57,7 +91,7 @@ void setup() {
   Serial.begin(9600);
 }
 
-int C[]={10,15,8,12,20,9};
+int C[]={10,15,8,12,20,9};  //set initial number of tablets
 int i;
 void loop()
 {lcd.clear();
@@ -65,17 +99,40 @@ void loop()
   lcd.print("1--2--3--4--5--6");
   
   lcd.setCursor(0,1);
-  for(i=0;i<=5;i++){
+  for(i=0;i<=5;i++){      //display corresponding number of tablets
     lcd.print(C[i]);
     lcd.print("-");  
   }
   delay(500);
-  if(digitalRead(lcdPin)==1){
+  if(digitalRead(lcdPin)==1){     //if box is open and LEDs are on
+    rotateFlag=0;
     changeLCD();
     digitalWrite(lcdPin,LOW); 
   } 
+
+  long duration, inches, cm;
+     duration = trigger();
+     inches = duration / 74 / 2;
+     Serial.println(inches);
+
+     
+  if(inches<5 && rotateFlag==1){
+        myservo.write(80);    //opens the box
+    }
+
+  else if(rotateFlag==0 && inches<5){
+    myservo.write(110);       //closes the box
+  }
+
+  else if(inches>5){
+    myservo.write(90);
+  }
+
+  //Flag after closing box needs to be changed.
+        
 }
 
+//function to change the counter of each box
 void changeLCD(){
   if(digitalRead(A0)==HIGH){
     C[0]=C[0]-1;
@@ -96,7 +153,6 @@ void changeLCD(){
   if(digitalRead(A5)==HIGH){
     C[5]=C[5]-1;
   }
-
-  delay(5000);
+  delay(3000);
 }
 

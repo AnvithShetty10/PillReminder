@@ -83,7 +83,7 @@ void loop() {
      
    if(digitalRead(A0) == HIGH || digitalRead(A1) == HIGH || digitalRead(A2) == HIGH || digitalRead(A3) == HIGH || digitalRead(A4) == HIGH || digitalRead(A5) == HIGH)
       {
-        sound=200;
+        sound=1000;
         LEDFlag=1;
       }
    else{
@@ -92,23 +92,24 @@ void loop() {
     
      if(inches<=5 && LEDFlag==1)
           {
-            tone(buzzer, sound);
+            //tone(buzzer, sound);
             buzzerFlag=1;
             digitalWrite(lcdPin,LOW);
-            digitalWrite(offPin,LOW);
+            digitalWrite(offPin,LOW); 
             
           }
      else if(inches>5 && LEDFlag==1){
          noTone(buzzer);
          buzzerFlag=0;
-         digitalWrite(lcdPin,HIGH);
-         delay(1000);
-         digitalWrite(offPin,HIGH);     
+         digitalWrite(lcdPin,HIGH);   //send signal to LCD_counter to change LCD values
+         delay(1000); 
+         digitalWrite(offPin,HIGH);   //send signal to mqtt code to off the LEDs     
         } 
 }
   
 
 
+//function to turn on LEDs based on message recieved by the nodeMCU
 void controlLED(){
 if(digitalRead(A0)==HIGH)
    {
@@ -160,16 +161,4 @@ else{
          digitalWrite(A5, LOW);
     }
 }
-
-/*
-void offLED(){
-    digitalWrite(ledPin, LOW);
-    digitalWrite(ledPin2, LOW);
-    digitalWrite(ledPin3, LOW);
-    digitalWrite(ledPin4, LOW);
-    digitalWrite(ledPin5, LOW);
-    digitalWrite(ledPin6, LOW);  
-  
-}
-*/
 

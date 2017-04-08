@@ -135,8 +135,8 @@ void loop() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     ++value;
-     Serial.println(digitalRead(offPin));
-    if(digitalRead(offPin)== 1){
+    //Serial.println(digitalRead(offPin));
+    if(digitalRead(offPin)== 1){    //recieve signal from arduino and turn off all LEDs
       delay(5000);
       for(i=0;i<=5;i++){
         digitalWrite(ledPin[i],LOW);
