@@ -92,7 +92,7 @@ void loop() {
     
      if(inches<=5 && LEDFlag==1)
           {
-            //tone(buzzer, sound);
+            tone(buzzer, sound);
             buzzerFlag=1;
             digitalWrite(lcdPin,LOW);
             digitalWrite(offPin,LOW); 
@@ -104,7 +104,11 @@ void loop() {
          digitalWrite(lcdPin,HIGH);   //send signal to LCD_counter to change LCD values
          delay(1000); 
          digitalWrite(offPin,HIGH);   //send signal to mqtt code to off the LEDs     
-        } 
+        }
+    if(inches <=5) 
+    digitalWrite(lcdPin,LOW);
+    else
+    digitalWrite(lcdPin,HIGH);
 }
   
 

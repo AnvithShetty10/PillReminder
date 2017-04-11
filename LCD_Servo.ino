@@ -107,7 +107,11 @@ void loop()
   if(digitalRead(lcdPin)==1){     //if box is open and LEDs are on
     rotateFlag=0;
     changeLCD();
-    digitalWrite(lcdPin,LOW); 
+    digitalWrite(lcdPin,LOW);
+  } 
+  else if(digitalRead(lcdPin)==0){     //if box is closed
+    rotateFlag=1;
+     
   } 
 
   long duration, inches, cm;
@@ -118,17 +122,17 @@ void loop()
      
   if(inches<5 && rotateFlag==1){
         myservo.write(80);    //opens the box
+        
     }
 
-  else if(rotateFlag==0 && inches<5){
+  else if(inches<5 && rotateFlag==0){
     myservo.write(110);       //closes the box
   }
 
   else if(inches>5){
     myservo.write(90);
   }
-
-  //Flag after closing box needs to be changed.
+ 
         
 }
 
