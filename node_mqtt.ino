@@ -30,9 +30,9 @@
 
 int ledPin[]={13,12,16,15,14,5};  
 int offPin=4;      
-const char* ssid = "Gunner";
-const char* password = "anvith10";
-const char* mqtt_server = "anask.xyz";
+const char* ssid = "***SSID***";
+const char* password = "***Password***";
+const char* mqtt_server = "***mqtt_server***";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
