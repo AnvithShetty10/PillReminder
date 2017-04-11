@@ -30,11 +30,33 @@ class PillReminder extends Component {
 			});
 	}
 
+	clickHandlerNow() {
+		fetch('http://anask.xyz/ledger/now', {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				led: this.state.selectedLed,
+			})
+		}).then((response) => response.json())
+			.then((responseJson) => {
+				this.setState({
+					showText: JSON.stringify(responseJson.confirm)
+				})
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	}
+
 	constructor() {
 		super();
 		this.state = { showText: null, selectedTime: 'None', selectedLed: 'None' };
 
 		this.clickHandler = this.clickHandler.bind(this);
+		this.clickHandlerNow = this.clickHandlerNow.bind(this);
 	}
 	render() {
 		let timeOptions = [
@@ -75,6 +97,7 @@ class PillReminder extends Component {
 				<Text>Select Time: {this.state.selectedTime}</Text>
 				<Button onPress={this.clickHandler} title="Proceed" color="#841584"/>
 				<Text>{check}</Text>
+				<Button onPress={this.clickHandlerNow} title="Send Immediately" color="#841584"/>
 			</View>
 		);
 	}
