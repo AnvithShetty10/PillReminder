@@ -9,8 +9,7 @@ import { SegmentedControls } from 'react-native-radio-buttons';
 
 class PillReminder extends Component {
 	clickHandler() {
-		fetch('http://anask.xyz/ledger/react-check', { /* view index.js on 
-github.com/anaskhan96/HealthLedger to see where this leads */
+		fetch('https://anask.xyz/ledger/react-check', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -32,7 +31,7 @@ github.com/anaskhan96/HealthLedger to see where this leads */
 	}
 
 	clickHandlerNow() {
-		fetch('http://anask.xyz/ledger/now', {
+		fetch('https://anask.xyz/ledger/now', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
